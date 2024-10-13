@@ -18,16 +18,44 @@ public class VehicleService {
 
     public List<Vehicle> getAllVehicles() {
         logger.info("Fetching all vehicles");
-        return vehicleRepository.findAll();
+        List<Vehicle> vehicles = vehicleRepository.findAll();
+        logger.info("Fetched " + vehicles.size() + " vehicles");
+        return vehicles;
     }
 
     public Vehicle addVehicle(Vehicle vehicle) {
         logger.info("Adding vehicle: " + vehicle);
-        return vehicleRepository.save(vehicle);
+        Vehicle savedVehicle = vehicleRepository.save(vehicle);
+        logger.info("Added vehicle: " + savedVehicle);
+        return savedVehicle;
     }
 
     public void deleteVehicle(Integer id) {
         logger.info("Deleting vehicle with ID: " + id);
         vehicleRepository.deleteById(id);
+        logger.info("Deleted vehicle with ID: " + id);
+    }
+
+    public List<Vehicle> getVehiclesByUserId(Integer userId) {
+        logger.info("Fetching vehicles for user ID: " + userId);
+        List<Vehicle> vehicles = vehicleRepository.findByUserId(userId);
+        logger.info("Fetched " + vehicles.size() + " vehicles for user ID: " + userId);
+        return vehicles;
+    }
+
+    public Vehicle updateVehicle(Integer id, Vehicle vehicleDetails) {
+        logger.info("Updating vehicle with ID: " + id);
+        return vehicleRepository.findById(id).map(vehicle -> {
+            vehicle.setType(vehicleDetails.getType());
+            vehicle.setBrand(vehicleDetails.getBrand());
+            vehicle.setMileage(vehicleDetails.getMileage());
+            vehicle.setColor(vehicleDetails.getColor());
+            vehicle.setPlate(vehicleDetails.getPlate());
+            vehicle.setDescription(vehicleDetails.getDescription());
+            vehicle.setImagen(vehicleDetails.getImagen());
+            Vehicle updatedVehicle = vehicleRepository.save(vehicle);
+            logger.info("Updated vehicle: " + updatedVehicle);
+            return updatedVehicle;
+        }).orElse(null);
     }
 }

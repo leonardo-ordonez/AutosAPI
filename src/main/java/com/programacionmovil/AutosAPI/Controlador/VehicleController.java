@@ -34,6 +34,7 @@ public class VehicleController {
     @PostMapping("/agregar/{userId}")
     public ResponseEntity<Vehicle> addVehicle(@PathVariable Integer userId, @RequestBody Vehicle vehicle) {
         logger.info("POST request to add vehicle for user ID: " + userId);
+        logger.info("Vehicle data: " + vehicle);
         User user = userService.findUserById(userId);
         if (user == null) {
             logger.warning("User not found: " + userId);
@@ -52,5 +53,24 @@ public class VehicleController {
         vehicleService.deleteVehicle(id);
         logger.info("Deleted vehicle with ID: " + id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/filtrar/{userId}")
+    public ResponseEntity<List<Vehicle>> getVehiclesByUserId(@PathVariable Integer userId) {
+        logger.info("GET request to fetch vehicles for user ID: " + userId);
+        List<Vehicle> vehicles = vehicleService.getVehiclesByUserId(userId);
+        logger.info("Fetched " + vehicles.size() + " vehicles for user ID: " + userId);
+        return ResponseEntity.ok(vehicles);
+    }
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<Vehicle> updateVehicle(@PathVariable Integer id, @RequestBody Vehicle vehicleDetails) {
+        logger.info("PUT request to update vehicle with ID: " + id);
+        Vehicle updatedVehicle = vehicleService.updateVehicle(id, vehicleDetails);
+        if (updatedVehicle == null) {
+            logger.warning("Vehicle not found: " + id);
+            return ResponseEntity.notFound().build();
+        }
+        logger.info("Updated vehicle: " + updatedVehicle);
+        return ResponseEntity.ok(updatedVehicle);
     }
 }

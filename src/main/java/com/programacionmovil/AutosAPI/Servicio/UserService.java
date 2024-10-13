@@ -39,4 +39,16 @@ public class UserService {
         }
         return Optional.empty();
     }
+
+    public User findUserById(Integer id) {
+        logger.info("Finding user by ID: " + id);
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            logger.info("User found: " + userOpt.get());
+        } else {
+            logger.warning("User not found with ID: " + id);
+        }
+        return userOpt.orElse(null);
+    }
+
 }
